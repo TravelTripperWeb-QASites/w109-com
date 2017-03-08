@@ -81,7 +81,7 @@ module Jekyll
       Dir.glob("#{definitions_dir}/**/*.json").each { |file| sub_folders << File.basename(file, '.*') } if file_name == 'models'
       hash = Hash.new { |h, k| h[k] = [] }
       sub_folders.each do |sub_folder|
-        hash[sub_folder.to_s] << {} unless File.directory?(File.join(model_dir, sub_folder))
+        hash[sub_folder.to_s] << [name: '', title:'', file: ''] unless File.directory?(File.join(model_dir, sub_folder))
         Dir[File.join(model_dir, sub_folder, '*.json')].map do |file|
           data = JSON.parse File.read(file)
           attrs = {}
