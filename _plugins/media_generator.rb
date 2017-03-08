@@ -10,7 +10,6 @@ module Jekyll
   class MediaGenerator < Generator
     # This generator is safe from arbitrary code execution.
     safe true
-    safe true
     def generate(_site)
       create_json_files media_dir, 'media' # creates image_data.json
       create_old_media old_media_dir # creates old_media.json
@@ -35,7 +34,7 @@ module Jekyll
     def old_media_dir
       File.join('_assets', 'images')
     end
-    
+
     def absolute_dir(dir)
       File.expand_path(File.join(Dir.pwd, dir))
     end
@@ -46,11 +45,10 @@ module Jekyll
         f.write(JSON.pretty_generate(content))
       end
     end
-    
+
     def clean_file(filename)
-      `rm #{filename}.json`
+      `rm #{filename}.json` if File.exist?(filename)
     end
-    
 
     # create old_media json for the images fetching from Github
     def create_old_media(folder)
@@ -82,14 +80,14 @@ module Jekyll
     #  creates media file based on params passing.
 
     def create_json_files(folder, file_name = 'models')
-
+      clean_file(file_name)
       abs_folder = absolute_dir(folder)
       return unless File.directory? abs_folder
-      clean_file(file_name)
-      sub_folders = Dir.entries("#{abs_folder}/").select { |entry| File.directory? File.join(abs_folder, entry) and !(entry == '.' || entry == '..') }
+      sub_folders = []
+      Dir.glob("#{definitions_dir}/**/*.json").each { |f| sub_folders << File.basename(f, '.*') } if file_name == 'models'
       if sub_folders.empty?
-        writing_file_data = Dir[File.join(abs_folder, '*.json')].map do |f| 
-          data = JSON.parse File.read(f) 
+        writing_file_data = Dir[File.join(abs_folder, '*.json')].map do |f|
+          data = JSON.parse File.read(f)
           data[:git_file_name] = File.join(folder, File.basename(f))
           data
         end.flatten
@@ -97,6 +95,7 @@ module Jekyll
       else
         hash = Hash.new { |h, k| h[k] = [] }
         sub_folders.each do |sub_folder|
+          hash[sub_folder.to_s] << [name: '', file: ''] unless File.directory?(File.join(model_dir, sub_folder))
           Dir[File.join(abs_folder, sub_folder, '*.json')].map do |f|
             data = JSON.parse File.read(f)
             hash[sub_folder.to_s] << [name: data['name'], file: File.basename(f)]
