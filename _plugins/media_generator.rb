@@ -81,9 +81,10 @@ module Jekyll
     #  creates media file based on params passing.
 
     def create_json_files(folder, file_name = 'models')
-      clean_file(file_name)
+
       abs_folder = absolute_dir(folder)
       return unless File.directory? abs_folder
+      clean_file(file_name)
       sub_folders = Dir.entries("#{abs_folder}/").select { |entry| File.directory? File.join(abs_folder, entry) and !(entry == '.' || entry == '..') }
       if sub_folders.empty?
         writing_file_data = Dir[File.join(abs_folder, '*.json')].map do |f| 
