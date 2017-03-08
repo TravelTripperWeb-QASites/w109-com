@@ -10,6 +10,7 @@ module Jekyll
   class MediaGenerator < Generator
     # This generator is safe from arbitrary code execution.
     safe true
+    safe true
     def generate(_site)
       create_json_files media_dir, 'media' # creates image_data.json
       create_old_media old_media_dir # creates old_media.json
