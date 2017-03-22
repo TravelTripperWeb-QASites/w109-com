@@ -1,0 +1,19 @@
+{
+  "room": [
+    [
+      {
+        "name": "",
+        "title": "",
+        "file": ""
+      }
+    ]
+  ],
+  "simple": [
+    [
+      {
+        "name": "asd",
+        "file": "simple1.json"
+      }
+    ]
+  ]
+}
